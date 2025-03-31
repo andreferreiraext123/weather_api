@@ -1,13 +1,15 @@
-from typing import Dict, Any, Optional, List
+from typing import Dict, Any, Optional, List, Union
 from fastapi import HTTPException
 import httpx
 import os
 from dotenv import load_dotenv
 
+
 load_dotenv()
 METEOMATICS_USERNAME = os.getenv("METEOMATICS_USERNAME")
 METEOMATICS_PASSWORD = os.getenv("METEOMATICS_PASSWORD")
 METEOMATICS_BASE_URL = "https://api.meteomatics.com/{time}/{parameters}/{coordinates}/{format}"
+
 
 async def get_weather_data(
     latitude: float,
@@ -17,18 +19,32 @@ async def get_weather_data(
     format: str = "json",
     altitude: Optional[float] = None,
     time_interval: Optional[str] = None,
-    model: Optional[str] = None
+    model: Optional[str] = None,
 ) -> Dict[str, Any]:
     """
     Fetches weather data from the Meteomatics API.
 
     Args:
-        ... (documentação da função)
+        latitude: Latitude of the location.
+        longitude: Longitude of the location.
+        time: The time or time range for the data request.
+        parameters: A single parameter or a list of parameters to retrieve.
+        format: The desired format of the response (e.g., 'json', 'csv').
+        altitude: (Optional) Altitude of the location.
+        time_interval: (Optional) The time interval for the data.
+        model: (Optional) Which model to use.
+
+    Returns:
+        A dictionary containing the weather data.
+
+    Raises:
+        HTTPException: If there's an error connecting to the API.
     """
 
     coordinates = f"{latitude},{longitude}"
     url = f"https://api.meteomatics.com/{time}/{','.join(parameters) if isinstance(parameters, list) else parameters}/{coordinates}/{format}"
 
+    # Add options to the URL
     if altitude is not None:
         url += f":{altitude}"
     if time_interval is not None:

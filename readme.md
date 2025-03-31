@@ -41,8 +41,20 @@ fastapi_project/
 
 
 
+
+
 Current task
 In the path parameter chant latitude and longitude for city and state name
+
+# Request flow
+ O cliente faz uma requisição para a sua API com a URL `/weather/{cidade}/{estado}`.
+2.  Sua API (função `get_current_weather`) recebe a cidade e o estado.
+3.  `get_current_weather` usa um dicionário para converter a cidade e o estado em latitude e longitude.
+4.  `get_current_weather` chama `get_weather_data` (a função que se comunica com a Meteomatics API) com as coordenadas e a data/hora.
+5.  `get_weather_data` faz a requisição para a Meteomatics API.
+6.  `get_weather_data` recebe a resposta da Meteomatics e a retorna para `get_current_weather`.
+7.  `get_current_weather` formata a resposta e a envia de volta para o cliente.
+
 
 
 Eu queria criar por min mesmo, consegue dividir em steps? Por exemplo trabalhar o arquivo x pra depois ir para o y, ir aprendendo os conceitos e boas práticas e ir avançando para o final do projeto, entender a proposta e tudo, gostaria de criar um api que consumisse uma api externa de weather, onde o user api desse alguns put request sobre a localizacao de uma cidade/estado e a api retona-se um json com as informações de weather, seria legal para entender os conceitos básicos, né?
