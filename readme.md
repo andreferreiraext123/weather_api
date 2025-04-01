@@ -1,68 +1,169 @@
+# Documentação da API Weather
 
-*Project Structure*
-fastapi_project/
-│── main.py
-│── models.py
-│── schemas.py
-│── database.py
-│── crud.py
-│── requirements.txt
+Esta documentação descreve a API Weather, que fornece dados meteorológicos em tempo real e previsões para diversas localidades.
 
+## 1. Endpoints
 
+* **Obter clima atual**: `/weather/current?city={cidade}&units={unidades}`
+    * Retorna as condições climáticas atuais para uma determinada cidade.
+    * Parâmetros:
+        * `city`: (obrigatório) Nome da cidade desejada.
+        * `units`: (opcional) Unidades de medida ("metric" para Celsius e metros por segundo, "imperial" para Fahrenheit e milhas por hora, padrão é "metric").
+    * Exemplo de requisição: `/weather/current?city=São Paulo&units=metric`
+* **Obter previsão do tempo**: `/weather/forecast?city={cidade}&units={unidades}&days={dias}`
+    * Retorna a previsão do tempo para os próximos dias em uma determinada cidade.
+    * Parâmetros:
+        * `city`: (obrigatório) Nome da cidade desejada.
+        * `units`: (opcional) Unidades de medida ("metric" ou "imperial").
+        * `days`: (opcional) Número de dias para a previsão (máximo de 7 dias).
+    * Exemplo de requisição: `/weather/forecast?city=Rio de Janeiro&units=metric&days=5`
 
+## 2. Respostas
 
+As respostas da API são formatadas em JSON.
 
-# Request Model Get
-[get](https://api.meteomatics.com/2025-03-31T13:00:00Z/t_2m:C/-22.9068,-43.1729/json)
-*model response*
-{
-  "version": "3.0",
-  "user": "ipnetbyvivo_matosferreira_andr",
-  "dateGenerated": "2025-03-31T13:14:56Z",
-  "status": "OK",
-  "data": [
+* **Resposta para `/weather/current`**:
+
+    ```json
     {
-      "parameter": "t_2m:C",
-      "coordinates": [
-        {
-          "lat": -22.9068,
-          "lon": -43.1729,
-          "dates": [
-            {
-              "date": "2025-03-31T13:00:00Z",
-              "value": 29.1
-            }
-          ]
-        }
-      ]
+      "location": {
+        "name": "São Paulo",
+        "region": "São Paulo",
+        "country": "Brazil",
+        "lat": -23.55,
+        "lon": -46.63,
+        "tz_id": "America/Sao_Paulo",
+        "localtime_epoch": 1678886400,
+        "localtime": "2023-03-15 10:00"
+      },
+      "current": {
+        "last_updated_epoch": 1678885800,
+        "last_updated": "2023-03-15 09:50",
+        "temp_c": 25.0,
+        "temp_f": 77.0,
+        "is_day": 1,
+        "condition": {
+          "text": "Ensolarado",
+          "icon": "//[cdn.weatherapi.com/weather/64x64/day/113.png](https://www.google.com/search?q=https://cdn.weatherapi.com/weather/64x64/day/113.png)",
+          "code": 1000
+        },
+        "wind_mph": 6.9,
+        "wind_kph": 11.2,
+        "wind_degree": 300,
+        "wind_dir": "WNW",
+        "pressure_mb": 1011.0,
+        "pressure_in": 29.85,
+        "precip_mm": 0.0,
+        "precip_in": 0.0,
+        "humidity": 60,
+        "cloud": 0,
+        "feelslike_c": 26.1,
+        "feelslike_f": 79.0,
+        "vis_km": 10.0,
+        "vis_miles": 6.0,
+        "uv": 6.0,
+        "gust_mph": 12.5,
+        "gust_kph": 20.2
+      }
     }
-  ]
-}
+    ```
 
+* **Resposta para `/weather/forecast`**:
 
+    ```json
+    {
+      "location": {
+        "name": "Rio de Janeiro",
+        "region": "Rio de Janeiro",
+        "country": "Brazil",
+        "lat": -22.9,
+        "lon": -43.21,
+        "tz_id": "America/Sao_Paulo",
+        "localtime_epoch": 1678886400,
+        "localtime": "2023-03-15 10:00"
+      },
+      "forecast": {
+        "forecastday": [
+          {
+            "date": "2023-03-15",
+            "date_epoch": 1678828800,
+            "day": {
+              "maxtemp_c": 30.0,
+              "maxtemp_f": 86.0,
+              "mintemp_c": 22.0,
+              "mintemp_f": 71.6,
+              "avgtemp_c": 26.0,
+              "avgtemp_f": 78.8,
+              "maxwind_mph": 15.0,
+              "maxwind_kph": 24.1,
+              "totalprecip_mm": 5.0,
+              "totalprecip_in": 0.20,
+              "avgvis_km": 10.0,
+              "avgvis_miles": 6.0,
+              "avghumidity": 70.0,
+              "daily_will_it_rain": 1,
+              "daily_chance_of_rain": 80,
+              "daily_will_it_snow": 0,
+              "daily_chance_of_snow": 0,
+              "condition": {
+                "text": "Chuva",
+                "icon": "//[cdn.weatherapi.com/weather/64x64/day/302.png](https://www.google.com/search?q=https://cdn.weatherapi.com/weather/64x64/day/302.png)",
+                "code": 1189
+              },
+              "uv": 7.0
+            },
+            "astro": {
+              "sunrise": "06:00 AM",
+              "sunset": "06:00 PM",
+              "moonrise": "04:00 PM",
+              "moonset": "02:00 AM",
+              "moon_phase": "Waxing Gibbous",
+              "moon_illumination": 75
+            }
+          },
+          {...}
+        ]
+      }
+    }
+    ```
 
+## 3. Códigos de Erro
 
+* **400 Bad Request**: Requisição inválida (parâmetros ausentes ou incorretos).
+* **404 Not Found**: Cidade não encontrada.
+* **500 Internal Server Error**: Erro interno do servidor.
 
-Current task
-In the path parameter chant latitude and longitude for city and state name
+## 4. Exemplos de Uso
 
-# Request flow
- O cliente faz uma requisição para a sua API com a URL `/weather/{cidade}/{estado}`.
-2.  Sua API (função `get_current_weather`) recebe a cidade e o estado.
-3.  `get_current_weather` usa um dicionário para converter a cidade e o estado em latitude e longitude.
-4.  `get_current_weather` chama `get_weather_data` (a função que se comunica com a Meteomatics API) com as coordenadas e a data/hora.
-5.  `get_weather_data` faz a requisição para a Meteomatics API.
-6.  `get_weather_data` recebe a resposta da Meteomatics e a retorna para `get_current_weather`.
-7.  `get_current_weather` formata a resposta e a envia de volta para o cliente.
+* **Usando `curl`**:
 
+    ```bash
+    curl "[http://sua-api.com/weather/current?city=Londres&units=metric](http://sua-api.com/weather/current?city=Londres&units=metric)"
+    curl "[http://sua-api.com/weather/forecast?city=Buenos](http://sua-api.com/weather/forecast?city=Buenos) Aires&units=imperial&days=3"
+    ```
 
+* **Usando Python**:
 
-Eu queria criar por min mesmo, consegue dividir em steps? Por exemplo trabalhar o arquivo x pra depois ir para o y, ir aprendendo os conceitos e boas práticas e ir avançando para o final do projeto, entender a proposta e tudo, gostaria de criar um api que consumisse uma api externa de weather, onde o user api desse alguns put request sobre a localizacao de uma cidade/estado e a api retona-se um json com as informações de weather, seria legal para entender os conceitos básicos, né?
-(1) Pesquise sobre os fundamentos de APIs (Application Programming Interfaces) e como elas funcionam para entender a proposta do projeto.
-(2) Busque informações sobre diferentes linguagens de programação populares para desenvolvimento de APIs, como Python, Node.js e Go, e compare suas vantagens e desvantagens para iniciantes.
-(3) Para a linguagem escolhida, encontre tutoriais e documentação sobre como criar um servidor web básico e lidar com requisições HTTP (especialmente o método PUT).
-(4) Pesquise por APIs de clima gratuitas ou com planos gratuitos que permitam buscar informações meteorológicas por cidade ou estado.
-(5) Aprenda como fazer requisições HTTP a partir da linguagem de programação escolhida para consumir a API de clima externa.
-(6) Descubra como processar a resposta da API de clima, que geralmente estará no formato JSON, e extrair as informações relevantes.
-(7) Estude como construir um endpoint de API que aceite requisições PUT com informações de localização (cidade/estado) e retorne os dados climáticos em formato JSON.
-(8) Investigue as melhores práticas para o desenvolvimento de APIs, incluindo tratamento de erros, validação de dados de entrada e organização do código.
+    ```python
+    import requests
+
+    response = requests.get("[http://sua-api.com/weather/current?city=Tokyo](http://sua-api.com/weather/current?city=Tokyo)")
+    if response.status_code == 200:
+        data = response.json()
+        print(data)
+    else:
+        print(f"Erro: {response.status_code}")
+
+    response = requests.get("[http://sua-api.com/weather/forecast?city=Paris&days=2](http://sua-api.com/weather/forecast?city=Paris&days=2)")
+    if response.status_code == 200:
+        data = response.json()
+        print(data)
+    else:
+        print(f"Erro: {response.status_code}")
+    ```
+
+## 5. Notas
+
+* A API Weather utiliza dados de diversas fontes para fornecer informações precisas e atualizadas.
+* A precisão das previsões pode variar dependendo da localização e do tempo.
+* É recomendado consultar a documentação da API Weather periodicamente, pois podem haver atualizações e melhorias.

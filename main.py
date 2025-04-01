@@ -5,6 +5,7 @@ import uvicorn
 from meteomatics_api import get_weather_data  # Importe a função do outro arquivo
 from geolocations import estados  # Importe o dicionário do arquivo
 
+
 app = FastAPI()
 
 
